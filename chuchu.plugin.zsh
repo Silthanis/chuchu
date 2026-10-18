@@ -12,6 +12,8 @@ typeset -g CHUCHU_VERSION="0.1.0"
 typeset -gA CHUCHU_PARSERS
 : ${CHUCHU_PARSERS[kubectl]:=.chuchu_parse_kubectl}
 : ${CHUCHU_PARSERS[docker]:=.chuchu_parse_docker}
+: ${CHUCHU_PARSERS[incus]:=.chuchu_parse_incus}
+: ${CHUCHU_PARSERS[lxd]:=.chuchu_parse_incus}
 : ${CHUCHU_PARSERS[ssh]:=.chuchu_parse_ssh}
 
 typeset -g _chuchu_tinted=0
@@ -37,7 +39,7 @@ typeset -g _chuchu_tinted=0
         if [[ -z $sub ]]; then
           REPLY=$arg
           return
-        elif [[ $arg == $sub ]]; then
+        elif [[ $arg == $sub || $arg == ${~sub} ]]; then
           sub=
         elif [[ -z $lead || $arg != ${~lead} ]]; then
           return
@@ -54,6 +56,10 @@ typeset -g _chuchu_tinted=0
 
 .chuchu_parse_docker() {
   .chuchu_operand exec '(container|compose)' '(-[cefHlpuw]|--host|--context|--config|--log-level|--file|--project-name|--project-directory|--profile|--env-file|--ansi|--parallel|--env|--user|--workdir|--detach-keys|--index)' "$@"
+}
+
+.chuchu_parse_incus() {
+	.chuchu_operand '(shell|exec)' '-([ntTqv]|-(cwd|disable-stdin|env|force-interactive|group|mode|user|debug|force-local|project|quiet|verbose))' '--env|--group|--mode|--project' "$@"
 }
 
 .chuchu_parse_ssh() {

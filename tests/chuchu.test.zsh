@@ -44,6 +44,12 @@ assert_target 'docker --context prod exec web-1 sh' web-1
 assert_target 'docker run alpine exec foo' ''
 assert_target 'docker ps' ''
 
+assert_target 'incus shell --project qa proxy-3' proxy-3
+assert_target 'incus network ls dev'
+assert_target 'lxd exec web2 /bin/sh' web2
+assert_target 'lxd config device add ollama video0 character source=/dev/video0 path=/dev/video0'
+assert_target 'incus config show db --verbose'
+
 assert_target 'ssh prod-bastion' prod-bastion
 assert_target 'ssh -i ~/.ssh/id -p 2222 deploy@prod-bastion' prod-bastion
 assert_target 'ssh -vp 2222 prod-bastion uptime' prod-bastion
